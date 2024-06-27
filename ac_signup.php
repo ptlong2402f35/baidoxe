@@ -8,7 +8,7 @@ if (isset($_POST['signup'])) {
     $userPhone = $_POST['dienthoai'];
     $userEmail = $_POST['email'];
     $userCode = $_POST['mathe'];
-    $now = date("Y-m-d");
+    $now = date("d-m-Y H:i:s");
     $sql = "insert into user values(?,?,?,?,?,?)";
     try {
         $statement = $connection->prepare($sql);

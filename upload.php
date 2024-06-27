@@ -7,16 +7,21 @@ if (isset($_POST['method']) && isset($_POST['uid'])) {
     echo "<script type='text/javascript'>alert('dcmmmmm');</script>";
     $mathe = $_POST['uid'];
     if ($_POST['method'] === 'in') {
-        $check = chechCardValid($mathe, $connection);
+        $check = checkCardValid($mathe, $connection);
         if ($check) {
             echo $mathe;
             updateCardIn($mathe, $connection);
+            createTransactions($mathe, $connection);
         }
     }
     if ($_POST['method'] === 'out') {
-        $check = chechCardValid($mathe, $connection);
-        if ($check)
+        $check = checkCardValid($mathe, $connection);
+        if ($check) {
             updateCardOut($mathe, $connection);
+            $fee = calcFee($mathe, $connection);
+            updateTransactions($mathe, $fee, $connection);
+            updateWallet($fee, $connection);
+        }
     }
     echo $_POST['method'];
 }

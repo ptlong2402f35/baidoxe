@@ -60,24 +60,26 @@ if (isset($_GET['role'])) {
                 <th>Mã thẻ</th>
                 <th>Đối tượng</th>
                 <th>Thời gian vào bến</th>
+                <th>Thời gian ra bến</th>
                 <th>
-                    Chi tiết
+                    Phí gửi xe
                 </th>
             </tr>
 
             <?php
             $path_dir = __DIR__ . '';
             include $path_dir . "/connectDB.php";
-            $parkingInfo = getParkingInfo($connection);
+            $transactions = getTransactions($connection);
             // $sql = "SELECT * FROM logs ORDER BY id DESC";
-            foreach ($parkingInfo as $info) {
+            foreach ($transactions as $info) {
                 echo "<tr>";
-                echo "<td>" . $info['code'] . "</td>";
+                echo "<td>" . $info['cardCode'] . "</td>";
                 echo "<td>";
                 echo ($info['userPhone'] && strlen($info['userPhone'])) ? "Đăng kí vip" :  "Khách";
                 echo "</td>";
                 echo "<td>" . $info['signIn'] . "</td>";
-                echo "<td>" . "<button>Xem chi tiết</button>" . "</td>";
+                echo "<td>" . $info['signOut'] . "</td>";
+                echo "<td>" . $info['value'] . "</td>";
                 echo "</tr>";
             };
             ?>

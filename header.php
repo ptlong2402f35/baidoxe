@@ -80,6 +80,12 @@
 		echo '<a href="createUser.php';
 		echo $adminRole ? '?role=admin' : '';
 		echo '">Đăng kí User</a>';
+		echo '<a href="historyManagement.php';
+		echo $adminRole ? '?role=admin' : '';
+		echo '">Lịch sử ra vào bến</a>';
+		echo '<a href="financeManagement.php';
+		echo $adminRole ? '?role=admin' : '';
+		echo '">Thống kê doanh thu</a>';
 		if ($adminRole) {
 			echo '<a href="login.php">Log Out</a>';
 		} else {
