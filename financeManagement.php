@@ -48,7 +48,19 @@ if (isset($_GET['role'])) {
         }
     </style>
 
-
+    <div class="filterDivWrapper">
+        <div class="filterContent">
+            <form action="" method="post">
+                <label for="start_date_fin">Start Date:</label>
+                <input type="date" id="start_date_fin" name="start_date_fin" required>
+                <br>
+                <label for="end_date_fin">End Date:</label>
+                <input type="date" id="end_date_fin" name="end_date_fin" required>
+                <br>
+                <input type="submit" value="Lọc">
+            </form>
+        </div>
+    </div>
     <div class="finanDivWrap">
         <div class="finanDivContent">
             <div class="totalDiv">

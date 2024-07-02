@@ -17,7 +17,7 @@ if (isset($_GET['role'])) {
 <html>
 
 <head>
-    <meta http-equiv="refresh" content="2">
+    <!-- <meta http-equiv="refresh" content="2"> -->
 </head>
 
 <body>
@@ -51,8 +51,29 @@ if (isset($_GET['role'])) {
             background-color: #00A8A9;
             color: white;
         }
+
+        .filterContent > form {
+            display: flex;
+            align-items: start;
+            justify-content: start;
+            margin: 12px 0 24px;
+            gap: 24px;  
+        }
     </style>
 
+    <div class="filterDivWrapper">
+        <div class="filterContent">
+            <form action="" method="post">
+                <label for="start_date_his">Start Date:</label>
+                <input type="date" id="start_date_his" name="start_date_his" value="null">
+                <br>
+                <label for="end_date_his">End Date:</label>
+                <input type="date" id="end_date_his" name="end_date_his" value="null">
+                <br>
+                <input type="submit" value="Lọc">
+            </form>
+        </div>
+    </div>
 
     <div id="parking" class="parking">
         <table id="table-show">
@@ -69,17 +90,32 @@ if (isset($_GET['role'])) {
             <?php
             $path_dir = __DIR__ . '';
             include $path_dir . "/connectDB.php";
-            $transactions = getTransactions($connection);
-            // $sql = "SELECT * FROM logs ORDER BY id DESC";
+            $start_date = null;
+            $end_date = null;
+            $transactions = [];
+            echo '<script>';
+            echo 'console.log("init === ' . json_encode($transactions) . '");';
+            echo '</script>';
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $start_date = $_POST['start_date_his'];
+                $end_date = $_POST['end_date_his'];
+
+                // Chuyển đổi ngày thành timestamp để so sánh
+                // $start_date = strtotime($start_date);
+                // $end_date = strtotime($end_date);
+
+                $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+            }
+            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
             foreach ($transactions as $info) {
                 echo "<tr>";
-                echo "<td>" . $info['cardCode'] . "</td>";
+                echo "<td>" . $info['cardCode'] || "--" . "</td>";
                 echo "<td>";
                 echo ($info['userPhone'] && strlen($info['userPhone'])) ? "Đăng kí vip" :  "Khách";
                 echo "</td>";
                 echo "<td>" . $info['signIn'] . "</td>";
-                echo "<td>" . $info['signOut'] . "</td>";
-                echo "<td>" . $info['value'] . "</td>";
+                echo "<td>" . $info['signOut'] || "--" . "</td>";
+                echo "<td>" . $info['value'] || 0 . "</td>";
                 echo "</tr>";
             };
             ?>
@@ -87,5 +123,9 @@ if (isset($_GET['role'])) {
     </div>
 
 </body>
+
+<!-- <script>
+    let transactionsData = <?php print_r($jsTrans) ?>;
+</script> -->
 
 </html>

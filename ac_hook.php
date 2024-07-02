@@ -105,7 +105,8 @@ function checkCardValid($mathe, $connection)
     return null;
 }
 
-function calcFee($mathe, $connection) {
+function calcFee($mathe, $connection)
+{
     $sql = "SELECT * from `card` where code=? ";
     try {
         $statement = $connection->prepare($sql);
@@ -114,15 +115,14 @@ function calcFee($mathe, $connection) {
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         if ($data && $data[0]) {
             $card = $data[0];
-            if($card['userPhone']) return 0;
+            if ($card['userPhone']) return 0;
             $start = new DateTime($card['signIn']);
             $end = new DateTime();
             $distance = $start->diff($end);
-            if($distance->days > 0) {
+            if ($distance->days > 0) {
                 return 30000;
-            }
-            else {
-                if($distance->h > 12) {
+            } else {
+                if ($distance->h > 12) {
                     return 20000;
                 }
                 return 10000;
@@ -136,7 +136,8 @@ function calcFee($mathe, $connection) {
     return null;
 }
 
-function createTransactions($mathe, $connection) {
+function createTransactions($mathe, $connection)
+{
     $now = date("d-m-Y H:i:s");
     $getSql = "SELECT * from `card` where `card`.code = ? ";
     $userPhone = null;
@@ -168,7 +169,8 @@ function createTransactions($mathe, $connection) {
     }
 }
 
-function updateTransactions($mathe, $fee, $connection) {
+function updateTransactions($mathe, $fee, $connection)
+{
     $now = date("d-m-Y H:i:s");
     $sql = "UPDATE `transactions` set value=?,signOut=?,updatedAt=? where `transactions`.cardCode = ? and `transactions`.signOut = null ";
     try {
@@ -184,7 +186,8 @@ function updateTransactions($mathe, $fee, $connection) {
     }
 }
 
-function updateWallet($fee, $connection) {
+function updateWallet($fee, $connection)
+{
     $getSql = "SELECT * from `tk` where `tk`.userName = ? ";
     $totalMoney = 0;
     try {
@@ -200,7 +203,7 @@ function updateWallet($fee, $connection) {
     } catch (PDOException $e) {
         $e->getMessage();
     }
-    
+
     $sql = "UPDATE `tk` set totalMoney=? where `tk`.userName = ?";
     $total = $totalMoney + $fee;
     try {
@@ -213,24 +216,32 @@ function updateWallet($fee, $connection) {
     }
 }
 
-function getTransactions($connection) {
+function getTransactions($connection)
+{
     $sql = "SELECT * from `transactions` ORDER BY updatedAt DESC";
     try {
         $statement = $connection->prepare($sql);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
+        echo '<script>';
+        echo 'console.log("test === ' . json_encode($data) . '");';
+        echo '</script>';
+        if ($data) {
+            return $data;
+        }
+        return [];
     } catch (PDOException $e) {
         $e->getMessage();
     }
     return null;
 }
 
-function calcAllFinance($connection) {
+function calcAllFinance($connection)
+{
     $calcTrans = getTransactions($connection);
     $totalTrans = 0;
-    foreach($calcTrans as $trans) {
-        if($trans['value']) {
+    foreach ($calcTrans as $trans) {
+        if ($trans['value']) {
             $totalTrans += $trans['value'];
         }
     }
@@ -266,4 +277,48 @@ function numberVipFinance($connection)
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
+}
+
+function countUsedCard($connection)
+{
+    $sql = `select COUNT(*) as count from card WHERE status = 1`;
+    try {
+        $statement = $connection->prepare($sql);
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+        return $data['count'];
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+//filter date for finance
+
+function getTransactionsWithDate($start, $end, $connection)
+{
+    echo '<script>';
+    echo 'console.log("check === ' . addslashes($start) . addslashes($end) . '");';
+    echo '</script>';
+    if (!$start || !$end) {
+        return getTransactions($connection);
+    }
+
+    $sql = "SELECT * from `transactions` where createdAt >= ? and createdAt <= ? ORDER BY updatedAt DESC";
+    try {
+        $statement = $connection->prepare($sql);
+        $statement->bindParam(1, $start);
+        $statement->bindParam(2, $end);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        echo '<script>';
+        echo 'console.log("check data=== ' . json_encode($data) . '");';
+        echo '</script>';
+        if ($data) {
+            return $data;
+        }
+        return [];
+    } catch (PDOException $e) {
+        $e->getMessage();
+    }
+    return null;
 }

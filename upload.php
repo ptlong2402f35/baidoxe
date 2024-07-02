@@ -1,5 +1,8 @@
 
 <?php
+$totalCount = 10;
+$usedCount;
+$fee = 0;
 $path_dir = __DIR__ . '';
 include $path_dir . "/connectDB.php";
 require 'ac_hook.php';
@@ -12,6 +15,7 @@ if (isset($_POST['method']) && isset($_POST['uid'])) {
             echo $mathe;
             updateCardIn($mathe, $connection);
             createTransactions($mathe, $connection);
+            $usedCount = countUsedCard($connection);
         }
     }
     if ($_POST['method'] === 'out') {
@@ -23,7 +27,7 @@ if (isset($_POST['method']) && isset($_POST['uid'])) {
             updateWallet($fee, $connection);
         }
     }
-    echo $_POST['method'];
+    echo $_POST['method'] . "-" . $fee . "-" . ($totalCount - $usedCount);
 }
 
 ?>
