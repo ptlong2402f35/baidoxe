@@ -1,6 +1,7 @@
 <?php
 $path_dir = __DIR__ . '';
 include $path_dir . "/connectDB.php";
+include "popup.php";
 
 if (isset($_POST['signup'])) {
 
@@ -22,6 +23,7 @@ if (isset($_POST['signup'])) {
         $statement->execute();
     } catch (PDOException $e) {
         echo $e->getMessage();
+        redirect("createUser", "Đã có lỗi xảy ra");
     }
 
     $sqlCard = "insert into card values(?,0,?,null,?,?)";
@@ -35,6 +37,7 @@ if (isset($_POST['signup'])) {
         $statement->execute();
     } catch (PDOException $e) {
         echo $e->getMessage();
+        redirect("createUser", "Đã có lỗi xảy ra");
     }
-    header("location: parkingManagement.php?role=admin");
+    redirect("createUser", "Thành công");
 }

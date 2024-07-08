@@ -1,15 +1,28 @@
 <?php
+include 'header.php';
 $adminRole = false;
-if (isset($_GET['role'])) {
-    if ($_GET['role'] != 'admin') {
-        header("location: login.php?error=noAdmin");
-        exit();
-    }
-    $adminRole = true;
-} else {
-    header("location: login.php?error=noAdmin");
-    exit();
-}
+// if (isset($_GET['role'])) {
+//     if ($_GET['role'] != 'admin') {
+//         header("location: login.php?error=noAdmin");
+//         exit();
+//     }
+//     $adminRole = true;
+// } else {
+//     header("location: login.php?error=noAdmin");
+//     exit();
+// }
+    $username = null;
+	$role = null;
+	if (isset($_SESSION['username'])) {
+		$username = $_SESSION['username'];
+		$role = $_SESSION['role'];
+        if($role != 1) {
+    		header("location: login.php");
+        }
+	}
+    else {
+		header("location: login.php");
+	}
 ?>
 
 
@@ -21,7 +34,7 @@ if (isset($_GET['role'])) {
 </head>
 
 <body>
-    <?php include 'header.php';
+    <?php
     require 'ac_hook.php' ?>
     <style>
         #table-show {
@@ -103,7 +116,7 @@ if (isset($_GET['role'])) {
                 // Chuyển đổi ngày thành timestamp để so sánh
                 // $start_date = strtotime($start_date);
                 // $end_date = strtotime($end_date);
-
+                
                 $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
             }
             $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
@@ -113,7 +126,7 @@ if (isset($_GET['role'])) {
                 echo "<td>";
                 echo ($info['userPhone'] && strlen($info['userPhone'])) ? "Đăng kí vip" :  "Khách";
                 echo "</td>";
-                echo "<td>" . $info['signIn'] . "</td>";
+                echo "<td>" . $info['signIn'] || "--" . "</td>";
                 echo "<td>" . $info['signOut'] || "--" . "</td>";
                 echo "<td>" . $info['value'] || 0 . "</td>";
                 echo "</tr>";

@@ -1,4 +1,5 @@
 <?php
+session_start();
 $path_dir = __DIR__ . '';
 include $path_dir . "/connectDB.php";
 
@@ -22,10 +23,14 @@ if (isset($_POST['login'])) {
 	} catch (PDOException $e) {
 		echo $e->getMessage();
 	}
-	echo ($data[0]['username']);
+	echo '<script>';
+	echo 'console.log("login oke === ' . $data[0]['username'] . '");';
+	echo '</script>';
 	if ($data && $data[0]['username'] === $Usermail && $data[0]['password'] === $Userpass) {
 		$checkLogin = true;
-		header("location: parkingManagement.php?role=admin");
+		$_SESSION["username"] = $data[0]['username'];
+		$_SESSION["role"] = $data[0]['role'];
+		header("location: parkingManagement.php");
 		exit();
 	}
 	if (!$data) {

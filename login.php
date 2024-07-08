@@ -1,7 +1,14 @@
 <?php
-session_start();
-if (isset($_SESSION['Admin-name'])) {
-  header("location: index.php");
+include 'header.php';
+// session_start();
+// if (isset($_SESSION['Admin-name'])) {
+//   header("location: index.php");
+// }
+if (isset($_SESSION['username'])) {
+  echo '<script>';
+  echo 'console.log("login username === ' . $_SESSION["username"] . '");';
+  echo '</script>';
+  // header("location: parkingManagement.php");
 }
 ?>
 <!DOCTYPE html>
@@ -39,7 +46,6 @@ if (isset($_SESSION['Admin-name'])) {
 </head>
 
 <body>
-  <?php include 'header.php'; ?>
   <main>
     <h1 class="slideInDown animated login-title" style="
     color: #fff; font-weight:600;
@@ -63,8 +69,7 @@ if (isset($_SESSION['Admin-name'])) {
                 echo '<div class="alert alert-danger">
                         Mật khẩu sai, vui lòng nhập lại!!
                       </div>';
-              }
-              elseif ($_GET['error'] == "noAdmin") {
+              } elseif ($_GET['error'] == "noAdmin") {
                 echo '<div class="alert alert-danger">
                         Vui lòng đăng nhập để tiếp tục!!
                       </div>';

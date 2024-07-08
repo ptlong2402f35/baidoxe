@@ -94,7 +94,7 @@ function checkCardValid($mathe, $connection)
         $statement->bindParam(1, $mathe);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if ($data) {
+        if ($data && $data[0]['active'] === 1) {
             return true;
         } else {
             return false;
@@ -267,8 +267,8 @@ function numberFee($connection)
 function numberVipFinance($connection)
 {
     $sql = "select COUNT(*) as count
-            FROM transactions
-            WHERE userPhone != null and signOut != null;";
+            FROM card
+            WHERE userPhone != null;";
     try {
         $statement = $connection->prepare($sql);
         $statement->execute();

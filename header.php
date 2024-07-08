@@ -1,10 +1,11 @@
 <?php
-		$adminRole = false;
-		if (isset($_GET['role'])) {
-			if ($_GET['role'] != 'admin') {
-			}
-			$adminRole = true;
-		}
+	session_start();
+	$username = null;
+	$role = null;
+	if (isset($_SESSION['username'])) {
+		$username = $_SESSION['username'];
+		$role = $_SESSION['role'];
+	}
 ?>
 <head>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -17,7 +18,6 @@
 		<div class="logo">
 			<?php 
 			echo '<a href="parkingManagement.php';
-			echo $adminRole ? '?role=admin' : '';
 			echo '">Bãi đỗ xe thông minh</a>';
 			?>
 		</div>
@@ -69,25 +69,23 @@
 	<div class="topnav" id="myTopnav">
 		<?php
 		echo '<a href="parkingManagement.php';
-		echo $adminRole ? '?role=admin' : '';
 		echo '">Quản lí bãi đỗ xe</a>';
 		echo '<a href="userManagement.php';
-		echo $adminRole ? '?role=admin' : '';
 		echo '">Quản lí người dùng</a>';
 		echo '<a href="cardManagement.php';
-		echo $adminRole ? '?role=admin' : '';
 		echo '">Quản lí thẻ</a>';
 		echo '<a href="createUser.php';
-		echo $adminRole ? '?role=admin' : '';
 		echo '">Đăng kí User</a>';
-		echo '<a href="historyManagement.php';
-		echo $adminRole ? '?role=admin' : '';
-		echo '">Lịch sử ra vào bến</a>';
-		echo '<a href="financeManagement.php';
-		echo $adminRole ? '?role=admin' : '';
-		echo '">Thống kê doanh thu</a>';
-		if ($adminRole) {
-			echo '<a href="login.php">Log Out</a>';
+		if($role == 1) {
+			echo '<a href="historyManagement.php';
+			echo '">Lịch sử ra vào bến</a>';
+			echo '<a href="financeManagement.php';
+			echo '">Thống kê doanh thu</a>';
+			echo '<a href="staffCreate.php';
+			echo '">Tạo tài khoản nhân viên</a>';
+		}
+		if ($username) {
+			echo '<a href="logout.php">Log Out</a>';
 		} else {
 			echo '<a href="login.php">Log In</a>';
 		}

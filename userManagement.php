@@ -1,14 +1,20 @@
 <?php
 $adminRole = false;
-if (isset($_GET['role'])) {
-    if ($_GET['role'] != 'admin') {
-        header("location: login.php?error=noAdmin");
-        exit();
-    }
-    $adminRole = true;
-} else {
-    header("location: login.php?error=noAdmin");
-    exit();
+include 'header.php';
+// if (isset($_GET['role'])) {
+//     if ($_GET['role'] != 'admin') {
+//         header("location: login.php?error=noAdmin");
+//         exit();
+//     }
+//     $adminRole = true;
+// } else {
+//     header("location: login.php?error=noAdmin");
+//     exit();
+// }
+$username;
+$role;
+if (!isset($_SESSION['username'])) {
+    header("location: login.php");
 }
 ?>
 
@@ -21,7 +27,7 @@ if (isset($_GET['role'])) {
 </head>
 
 <body>
-    <?php include 'header.php';
+    <?php
     require 'ac_hook.php' ?>
     <style>
         #table-show {
@@ -69,7 +75,7 @@ if (isset($_GET['role'])) {
             $path_dir = __DIR__ . '';
             include $path_dir . "/connectDB.php";
             $userInfo = getUserInfo($connection);
-           
+
             foreach ($userInfo as $info) {
                 echo "<tr>";
                 echo "<td>" . $info['name'] . "</td>";

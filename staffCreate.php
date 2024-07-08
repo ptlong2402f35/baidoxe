@@ -12,12 +12,17 @@ $adminRole = false;
 //     header("location: login.php?error=noAdmin");
 //     exit();
 // }
-    $userId;
-    $role;
-    if (!isset($_SESSION['username'])) {
-        header("location: login.php");
-    }
-    $mess = showPopup();
+$userId;
+$role;
+if (!isset($_SESSION['username'])) {
+    header("location: login.php");
+}
+$message = showPopup();
+// if ($message) {
+//     echo '<script>';
+//     echo 'alert("' . $message . '");';
+//     echo '</script>';
+// }
 ?>
 
 
@@ -79,14 +84,14 @@ $adminRole = false;
 
     <div id="" class="form-wrap">
         <div class="form-contain">
-            <h2 class="form-title">Đăng kí thành viên vip</h2>
+            <h2 class="form-title">Đăng kí nhân viên</h2>
             <div class="form-box">
-                <form class="signup-form" action="ac_signup.php" method="post" enctype="multipart/form-data">
-                    <input type="text" name="hoten" id="hoten" placeholder="Họ tên" required />
-                    <input type="text" name="dienthoai" id="dienthoai" placeholder="Số điện thoại" required />
-                    <input type="text" name="email" id="email" placeholder="Email" required />
-                    <input type="text" name="mathe" id="mathe" placeholder="Mã thẻ" required />
-                    <button type="submit" name="signup" id="signup">Đăng kí và tạo thẻ</button>
+                <form class="signup-form" action="staff_signup.php" method="post" enctype="multipart/form-data">
+                    <input type="text" name="userName" id="userName" placeholder="Tên đăng nhập" required />
+                    <input type="password" name="password" id="password" placeholder="mật khẩu" required />
+                    <!-- <input type="text" name="email" id="email" placeholder="Email" required />
+                    <input type="text" name="phone" id="phone" placeholder="Số điện thoại" required /> -->
+                    <button type="submit" name="signup" id="signup">Đăng kí</button>
                 </form>
             </div>
         </div>

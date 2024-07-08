@@ -1,15 +1,22 @@
 <?php
+include 'header.php';
 $adminRole = false;
-if (isset($_GET['role'])) {
-    if ($_GET['role'] != 'admin') {
-        header("location: login.php?error=noAdmin");
-        exit();
+// if (isset($_GET['role'])) {
+//     if ($_GET['role'] != 'admin') {
+//         header("location: login.php?error=noAdmin");
+//         exit();
+//     }
+//     $adminRole = true;
+// } else {
+//     header("location: login.php?error=noAdmin");
+//     exit();
+// }
+    $userId;
+    $role;
+    if (!isset($_SESSION['username'])) {
+        header("location: login.php");
     }
-    $adminRole = true;
-} else {
-    header("location: login.php?error=noAdmin");
-    exit();
-}
+    
 ?>
 
 
@@ -21,7 +28,7 @@ if (isset($_GET['role'])) {
 </head>
 
 <body>
-    <?php include 'header.php';
+    <?php
     require 'ac_hook.php' ?>
     <style>
         #table-show {

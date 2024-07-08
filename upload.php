@@ -7,12 +7,12 @@ $path_dir = __DIR__ . '';
 include $path_dir . "/connectDB.php";
 require 'ac_hook.php';
 if (isset($_POST['method']) && isset($_POST['uid'])) {
-    echo "<script type='text/javascript'>alert('dcmmmmm');</script>";
+    // echo "<script type='text/javascript'>alert('dcmmmmm');</script>";
     $mathe = $_POST['uid'];
     if ($_POST['method'] === 'in') {
         $check = checkCardValid($mathe, $connection);
         if ($check) {
-            echo $mathe;
+            // echo $mathe;
             updateCardIn($mathe, $connection);
             createTransactions($mathe, $connection);
             $usedCount = countUsedCard($connection);
@@ -26,6 +26,10 @@ if (isset($_POST['method']) && isset($_POST['uid'])) {
             updateTransactions($mathe, $fee, $connection);
             updateWallet($fee, $connection);
         }
+        
+    }
+    if(!$check) {
+        echo "invalid-0-" . ($totalCount - $usedCount);
     }
     echo $_POST['method'] . "-" . $fee . "-" . ($totalCount - $usedCount);
 }
