@@ -1,5 +1,6 @@
 
 <?php
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 
 function getParkingInfo($connection)
@@ -46,9 +47,9 @@ function getCardInfo($connection)
 
 function updateCardIn($mathe, $connection)
 {
-    $todaydate = date("d-m-Y H:i:s");
-    $now = date('d-m-Y H:i:s', strtotime($todaydate));
-    echo $now;
+    $todaydate = date("Y-m-d H:i:s");
+    $now = date('Y-m-d H:i:s', strtotime($todaydate));
+
     $sql = "UPDATE `card` set status=1,signIn=?,updatedAt=? where `card`.code = ?";
     try {
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -68,8 +69,8 @@ function updateCardIn($mathe, $connection)
 
 function updateCardOut($mathe, $connection)
 {
-    $todaydate = date("d-m-Y H:i:s");
-    $now = date('d-m-Y H:i:s', strtotime($todaydate));
+    $todaydate = date("Y-m-d H:i:s");
+    $now = date('Y-m-d H:i:s', strtotime($todaydate));
     $sql = "UPDATE `card` set status=0,signIn=null,updatedAt=? where `card`.code = ? ";
     try {
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -98,6 +99,25 @@ function checkCardValid($mathe, $connection)
             return true;
         } else {
             return false;
+        }
+    } catch (PDOException $e) {
+        $e->getMessage();
+    }
+    return null;
+}
+
+function checkMethodDetect($mathe, $connection)
+{
+    $sql = "SELECT * from `card` where code=? ";
+    try {
+        $statement = $connection->prepare($sql);
+        $statement->bindParam(1, $mathe);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        if ($data && $data[0]['status'] === 1) {
+            return "out";
+        } else {
+            return "in";
         }
     } catch (PDOException $e) {
         $e->getMessage();
@@ -138,7 +158,8 @@ function calcFee($mathe, $connection)
 
 function createTransactions($mathe, $connection)
 {
-    $now = date("d-m-Y H:i:s");
+    $todaydate = date("Y-m-d H:i:s");
+    $now = date('Y-m-d H:i:s', strtotime($todaydate));
     $getSql = "SELECT * from `card` where `card`.code = ? ";
     $userPhone = null;
     try {
@@ -162,7 +183,7 @@ function createTransactions($mathe, $connection)
         $statement->bindParam(2, $userPhone);
         $statement->bindParam(3, $now);
         $statement->bindParam(4, $now);
-        $statement->bindParam(4, $now);
+        $statement->bindParam(5, $now);
         $statement->execute();
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -171,8 +192,9 @@ function createTransactions($mathe, $connection)
 
 function updateTransactions($mathe, $fee, $connection)
 {
-    $now = date("d-m-Y H:i:s");
-    $sql = "UPDATE `transactions` set value=?,signOut=?,updatedAt=? where `transactions`.cardCode = ? and `transactions`.signOut = null ";
+    $todaydate = date("Y-m-d H:i:s");
+    $now = date('Y-m-d H:i:s', strtotime($todaydate));
+    $sql = "UPDATE `transactions` set `transactions`.value=?,signOut=?,updatedAt=? where `transactions`.cardCode = ? and `transactions`.signOut is null";
     try {
         $statement = $connection->prepare($sql);
 
@@ -188,11 +210,10 @@ function updateTransactions($mathe, $fee, $connection)
 
 function updateWallet($fee, $connection)
 {
-    $getSql = "SELECT * from `tk` where `tk`.userName = ? ";
+    $getSql = "SELECT * from `tk` where `tk`.userName = 'admin' ";
     $totalMoney = 0;
     try {
         $statement = $connection->prepare($getSql);
-        $statement->bindParam(1, "admin");
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         if ($data && $data[0]) {
@@ -204,12 +225,11 @@ function updateWallet($fee, $connection)
         $e->getMessage();
     }
 
-    $sql = "UPDATE `tk` set totalMoney=? where `tk`.userName = ?";
+    $sql = "UPDATE `tk` set totalMoney=? where `tk`.userName = 'admin'";
     $total = $totalMoney + $fee;
     try {
         $statement = $connection->prepare($sql);
         $statement->bindParam(1, $total);
-        $statement->bindParam(2, "admin");
         $statement->execute();
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -223,9 +243,6 @@ function getTransactions($connection)
         $statement = $connection->prepare($sql);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        echo '<script>';
-        echo 'console.log("test === ' . json_encode($data) . '");';
-        echo '</script>';
         if ($data) {
             return $data;
         }
@@ -281,11 +298,12 @@ function numberVipFinance($connection)
 
 function countUsedCard($connection)
 {
-    $sql = `select COUNT(*) as count from card WHERE status = 1`;
+    $sql = "select COUNT(*) as count from `card` WHERE `card`.status = 1";
     try {
         $statement = $connection->prepare($sql);
         $statement->execute();
         $data = $statement->fetch(PDO::FETCH_ASSOC);
+
         return $data['count'];
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -310,9 +328,7 @@ function getTransactionsWithDate($start, $end, $connection)
         $statement->bindParam(2, $end);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        echo '<script>';
-        echo 'console.log("check data=== ' . json_encode($data) . '");';
-        echo '</script>';
+
         if ($data) {
             return $data;
         }

@@ -26,7 +26,7 @@ if (isset($_POST['signup'])) {
         redirect("createUser", "Đã có lỗi xảy ra");
     }
 
-    $sqlCard = "insert into card values(?,0,?,null,?,?)";
+    $sqlCard = "insert into card values(?,0,?,null,?,?,1)";
     try {
         $statement = $connection->prepare($sqlCard);
 

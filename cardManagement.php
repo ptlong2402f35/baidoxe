@@ -1,5 +1,6 @@
 <?php
 include 'header.php';
+include 'popup.php';
 $adminRole = false;
 // if (isset($_GET['role'])) {
 //     if ($_GET['role'] != 'admin') {
@@ -11,12 +12,12 @@ $adminRole = false;
 //     header("location: login.php?error=noAdmin");
 //     exit();
 // }
-    $userId;
-    $role;
-    if (!isset($_SESSION['username'])) {
-        header("location: login.php");
-    }
-    
+$userId;
+$role;
+if (!isset($_SESSION['username'])) {
+    header("location: login.php");
+}
+showPopup();
 ?>
 
 
@@ -70,6 +71,9 @@ $adminRole = false;
                 <th>
                     Ngày tạo
                 </th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+                <!-- <th>Gia hạn vip</th> -->
             </tr>
 
             <?php
@@ -81,18 +85,45 @@ $adminRole = false;
                 echo "<tr>";
                 echo "<td>" . $info['code'] . "</td>";
                 echo "<td>";
-                echo ($info['status'] === strval(1)) ? "Đang hoạt động" :  "Không hoạt động";
+                echo ($info['status'] === 1) ? "Đang hoạt động" :  "Không hoạt động";
                 echo "</td>";
                 echo "<td>";
                 echo ($info['userPhone']) ? $info['userPhone'] :  "Chưa đăng kí";
                 echo "</td>";
-                echo "<td>" . $info['createdAt'] . "</td>";;
+                echo "<td>" . $info['createdAt'] . "</td>";
+                echo "<td>"; 
+                echo $info['active'] === 1 ? "Kích hoạt" : "Không Kích hoạt"; 
+                echo "</td>";
+                // echo "<td>";
+                // echo  $info['userPhone'] ? "<button id='update-ex-btn'>Gia hạn</button>" : "";
+                // echo "</td>";
+                echo "<td>";
+                echo $info['active']  === 1 ? "<button id='unactive-btn'  onclick=\"updateActive('" . $info['code'] . "',2)\">Hủy kích hoạt</button>" : "<button id='active-btn' onclick=\"updateActive('" . $info['code'] . "',1)\">Kích hoạt</button>";
+                echo "</td>";
                 echo "</tr>";
             };
             ?>
         </table>
     </div>
+    <script>
+        function updateActive(code, status) {
+            console.log("UPDATE");
+            console.log("code", code);
+            console.log("status", status);
+            if (!code) return;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'activeCardHook.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log("XHR", xhr);
+                    location.reload();
+                }
+            };
+            xhr.send('action=updatestatus&code=' + encodeURIComponent(code) + "&status=" + encodeURIComponent(status));
 
+        }
+    </script>
 </body>
 
 </html>

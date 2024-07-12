@@ -11,18 +11,17 @@ $adminRole = false;
 //     header("location: login.php?error=noAdmin");
 //     exit();
 // }
-    $username = null;
-	$role = null;
-	if (isset($_SESSION['username'])) {
-		$username = $_SESSION['username'];
-		$role = $_SESSION['role'];
-        if($role != 1) {
-    		header("location: login.php");
-        }
-	}
-    else {
-		header("location: login.php");
-	}
+$username = null;
+$role = null;
+if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+    $role = $_SESSION['role'];
+    if ($role != 1) {
+        header("location: login.php");
+    }
+} else {
+    header("location: login.php");
+}
 ?>
 
 
@@ -65,12 +64,12 @@ $adminRole = false;
             color: white;
         }
 
-        .filterContent > form {
+        .filterContent>form {
             display: flex;
             align-items: start;
             justify-content: start;
             margin: 12px 0 24px;
-            gap: 24px;  
+            gap: 24px;
         }
     </style>
 
@@ -106,9 +105,6 @@ $adminRole = false;
             $start_date = null;
             $end_date = null;
             $transactions = [];
-            echo '<script>';
-            echo 'console.log("init === ' . json_encode($transactions) . '");';
-            echo '</script>';
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $start_date = $_POST['start_date_his'];
                 $end_date = $_POST['end_date_his'];
@@ -116,19 +112,27 @@ $adminRole = false;
                 // Chuyển đổi ngày thành timestamp để so sánh
                 // $start_date = strtotime($start_date);
                 // $end_date = strtotime($end_date);
-                
+
+                $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+            } else {
                 $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
             }
-            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+
+            // echo "<script>console.log('" . json_encode($transactions) . "');</script>";
+
             foreach ($transactions as $info) {
                 echo "<tr>";
-                echo "<td>" . $info['cardCode'] || "--" . "</td>";
+                echo "<td>" . $info['cardCode'] . "</td>";
                 echo "<td>";
                 echo ($info['userPhone'] && strlen($info['userPhone'])) ? "Đăng kí vip" :  "Khách";
                 echo "</td>";
-                echo "<td>" . $info['signIn'] || "--" . "</td>";
-                echo "<td>" . $info['signOut'] || "--" . "</td>";
-                echo "<td>" . $info['value'] || 0 . "</td>";
+                echo "<td>" . $info['signIn']  . "</td>";
+                echo "<td>";
+                echo $info['signOut'] ? $info['signOut'] : "Chưa rời bến";
+                echo "</td>";
+                echo "<td>";
+                echo ($info['value'] || $info['value'] >= 0) ? $info['value'] : "Chưa rời bến";
+                echo "</td>";
                 echo "</tr>";
             };
             ?>

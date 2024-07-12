@@ -29,7 +29,7 @@ if (isset($_SESSION['username'])) {
 <html>
 
 <head>
-    <meta http-equiv="refresh" content="2">
+    <!-- <meta http-equiv="refresh" content="2"> -->
 </head>
 
 <body>
@@ -63,6 +63,13 @@ if (isset($_SESSION['username'])) {
         .labelfinancediv {
             margin-right: 48px;
         }
+        .filterContent>form {
+            display: flex;
+            align-items: start;
+            justify-content: start;
+            margin: 12px 0 24px;
+            gap: 24px;
+        }
     </style>
 
     <div class="filterDivWrapper">
@@ -78,6 +85,20 @@ if (isset($_SESSION['username'])) {
             </form>
         </div>
     </div>
+    <?php
+        $start_date = null;
+        $end_date = null;
+        $finanMoney = 0;
+        $vipCount = 0;
+        $totalValue = 0;
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $start_date = $_POST['start_date_his'];
+            $end_date = $_POST['end_date_his'];
+            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+        } else {
+            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+        }
+    ?>
     <div class="finanDivWrap">
         <div class="finanDivContent">
             <div class="totalDiv">
