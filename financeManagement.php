@@ -91,12 +91,17 @@ if (isset($_SESSION['username'])) {
         $finanMoney = 0;
         $vipCount = 0;
         $totalValue = 0;
+        $feeCount = 0;
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $start_date = $_POST['start_date_his'];
-            $end_date = $_POST['end_date_his'];
-            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+            $start_date = $_POST['start_date_fin'];
+            $end_date = $_POST['end_date_fin'];
+            $finanMoney = calcAllFinance($start_date, $end_date, $connection);
+            $vipCount = numberVipFinance($connection);
+            $feeCount = numberFee($start_date, $end_date, $connection);
         } else {
-            $transactions = getTransactionsWithDate($start_date, $end_date, $connection);
+            $finanMoney = calcAllFinance($start_date, $end_date, $connection);
+            $vipCount = numberVipFinance($connection);
+            $feeCount = numberFee($start_date, $end_date, $connection);        
         }
     ?>
     <div class="finanDivWrap">
@@ -105,11 +110,8 @@ if (isset($_SESSION['username'])) {
                 <div class="counter">
                     <label>Tổng Thu nhập:</label>
                     <label><?php
-                            $finanMoney = calcAllFinance($connection);
-                            $vipCount = numberVipFinance($connection);
                             if (!$finanMoney) $finanMoney = 0;
-                            if ($vipCount) $vipCount = 0;
-                            echo $finanMoney + $vipCount * 200000;
+                            echo $finanMoney;
                             ?>đ</label>
                 </div>
             </div>
@@ -120,15 +122,13 @@ if (isset($_SESSION['username'])) {
                 <div class="counter">
                     <label>Số lượng:</label>
                     <label><?php
-                            $feeCount = numberFee($connection);
                             if ($feeCount) echo $feeCount;
-                            else echo "---";
+                            else echo 0;
                             ?></label>
                 </div>
                 <div class="total">
                     <label>Thu nhập:</label>
                     <label><?php
-                            $finanMoney = calcAllFinance($connection);
                             if ($finanMoney) echo $finanMoney;
                             else echo "---";
                             ?>đ</label>
@@ -141,19 +141,20 @@ if (isset($_SESSION['username'])) {
                 <div class="counter">
                     <label>Số lượng:</label>
                     <label><?php
-                            $vipCount = numberVipFinance($connection);
                             if ($vipCount) echo $vipCount;
                             else echo 0;
                             ?></label>
                 </div>
-                <div class="total">
+                <!-- <div class="total">
                     <label>Thu nhập:</label>
-                    <label><?php
+                    <label>
+                        <?php
                             $vipCount = numberVipFinance($connection);
                             if ($vipCount) echo $vipCount * 200000;
                             else echo "---";
-                            ?>đ</label>
-                </div>
+                        ?>
+                            đ</label>
+                </div> -->
             </div>
         </div>
     </div>

@@ -76,13 +76,15 @@
 		echo '">Quản lí thẻ</a>';
 		echo '<a href="createUser.php';
 		echo '">Đăng kí User</a>';
+		echo '<a href="historyManagement.php';
+		echo '">Lịch sử ra vào bến</a>';
 		if($role == 1) {
-			echo '<a href="historyManagement.php';
-			echo '">Lịch sử ra vào bến</a>';
 			echo '<a href="financeManagement.php';
 			echo '">Thống kê doanh thu</a>';
 			echo '<a href="staffCreate.php';
 			echo '">Tạo tài khoản nhân viên</a>';
+			echo '<a href="staffManagement.php';
+			echo '">Quản lí tài khoản nhân viên</a>';
 		}
 		if ($username) {
 			echo '<a href="logout.php">Log Out</a>';

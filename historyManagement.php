@@ -16,9 +16,9 @@ $role = null;
 if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     $role = $_SESSION['role'];
-    if ($role != 1) {
-        header("location: login.php");
-    }
+    // if ($role != 1) {
+    //     header("location: login.php");
+    // }
 } else {
     header("location: login.php");
 }

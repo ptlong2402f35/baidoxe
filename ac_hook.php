@@ -89,7 +89,7 @@ function updateCardOut($mathe, $connection)
 
 function checkCardValid($mathe, $connection)
 {
-    $sql = "SELECT * from `card` where code=? ";
+    $sql = "SELECT * from `card` where code=?";
     try {
         $statement = $connection->prepare($sql);
         $statement->bindParam(1, $mathe);
@@ -253,9 +253,9 @@ function getTransactions($connection)
     return null;
 }
 
-function calcAllFinance($connection)
+function calcAllFinance($start, $end, $connection)
 {
-    $calcTrans = getTransactions($connection);
+    $calcTrans = getTransactionsWithDate($start, $end, $connection);
     $totalTrans = 0;
     foreach ($calcTrans as $trans) {
         if ($trans['value']) {
@@ -266,11 +266,26 @@ function calcAllFinance($connection)
     return $totalTrans;
 }
 
-function numberFee($connection)
+function numberFee($start, $end, $connection)
 {
     $sql = "select COUNT(*) as count
             FROM transactions
-            WHERE userPhone = null and signOut != null;";
+            WHERE userPhone is null and signOut is not null;";
+    if ($start && $end) {
+        $sql = "select COUNT(*) as count
+            FROM transactions
+            WHERE userPhone is null and signOut is not null and signOut > ? and signOut < ?;";
+        try {
+            $statement = $connection->prepare($sql);
+            $statement->bindParam(1, $start);
+            $statement->bindParam(2, $end);
+            $statement->execute();
+            $data = $statement->fetch(PDO::FETCH_ASSOC);
+            return $data['count'];
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
     try {
         $statement = $connection->prepare($sql);
         $statement->execute();
@@ -285,7 +300,7 @@ function numberVipFinance($connection)
 {
     $sql = "select COUNT(*) as count
             FROM card
-            WHERE userPhone != null;";
+            WHERE userPhone is not null;";
     try {
         $statement = $connection->prepare($sql);
         $statement->execute();
@@ -326,6 +341,25 @@ function getTransactionsWithDate($start, $end, $connection)
         $statement = $connection->prepare($sql);
         $statement->bindParam(1, $start);
         $statement->bindParam(2, $end);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            return $data;
+        }
+        return [];
+    } catch (PDOException $e) {
+        $e->getMessage();
+    }
+    return null;
+}
+
+function getStaffInfos($connection)
+{
+
+    $sql = "SELECT * from `tk` where role != 1";
+    try {
+        $statement = $connection->prepare($sql);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
